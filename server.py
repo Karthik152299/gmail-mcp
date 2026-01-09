@@ -1,4 +1,4 @@
-from fastmcp import FastMCP
+﻿from fastmcp import FastMCP
 import uuid
 from gmail_client import send_email
 
@@ -10,6 +10,20 @@ def draft_email(to: str, subject: str, body: str) -> dict:
     draft_id = str(uuid.uuid4())
     drafts[draft_id] = {"to": to, "subject": subject, "body": body}
     return {"draft_id": draft_id, "preview": drafts[draft_id]}
+
+
+@mcp.tool()
+def list_drafts() -> dict:
+    return {"drafts": drafts}
+
+
+@mcp.tool()
+def delete_draft(draft_id: str) -> dict:
+    if draft_id not in drafts:
+        raise ValueError("Draft not found")
+
+    deleted = drafts.pop(draft_id)
+    return {"deleted": True, "draft_id": draft_id, "preview": deleted}
 
 
 @mcp.tool()
